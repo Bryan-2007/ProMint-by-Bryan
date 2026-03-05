@@ -15,15 +15,11 @@ There is no simple way for recruiters or institutions to verify whether a studen
 
 Campus Skill NFT enables professors to mint Soulbound (non-transferable) NFTs containing:
 
-Student Name
-
-Skill Title
-
-Project / GitHub Link
-
-Issuer (Professor) Address
-
-Timestamp of issuance
+- Student Name
+- Skill Title
+- Project / GitHub Link
+- Issuer (Professor) Address
+- Timestamp of issuance
 
 Since the NFT is non-transferable, it acts as a permanent proof of achievement.
 
@@ -41,32 +37,22 @@ Since the NFT is non-transferable, it acts as a permanent proof of achievement.
 
 🛠 Tech Stack
 
-Solidity (Smart Contract)
-
-Foundry (Development & Deployment)
-
-MetaMask (Wallet Interaction)
-
-Sepolia Testnet (Blockchain Network)
-
-HTML, CSS, JavaScript (Frontend)
+- Solidity (Smart Contract)
+- Hardhat (Development & Deployment)
+- MetaMask (Wallet Interaction)
+- Sepolia Testnet (Blockchain Network)
+- HTML, CSS, JavaScript (Frontend)
 
 🎯 Use Cases
 
-Verifiable academic credentials
-
-Skill-based digital portfolios
-
-Transparent recruitment verification
-
-Blockchain-based university certification system
+- Verifiable academic credentials
+- Skill-based digital portfolios
+- Transparent recruitment verification
+- Blockchain-based university certification system
 
 🔮 Future Improvements
 
-Multi-professor authorization system
-
-IPFS metadata storage
-
-Revocation mechanism
-
-University-wide dashboard
+- Multi-professor authorization system
+- IPFS metadata storage
+- Revocation mechanism
+- University-wide dashboard
