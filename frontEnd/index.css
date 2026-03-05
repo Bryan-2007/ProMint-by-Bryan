@@ -2,15 +2,17 @@
     background-color: rgb(150, 205, 187);
 }
 
-.s1{
+.menu{
     display: flex;
     height: 100px;
     margin: 20px;
-    background-color: rgb(158, 154, 154);
+    background-color: rgb(151, 221, 222);
+    border-radius: 30px;
 }
 
-.d1{
-    background-color: rgb(36, 34, 31);
+.logo{
+    background-color: rgb(59, 57, 54);
+    border-radius: 30px;
 }
 
 .image{
@@ -20,4 +22,47 @@
 
 .navbar{
     margin-left: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    font-size: large;
+    font-family:monospace;
+    width: 300px;
+}
+
+.n1, .n2, .n3{
+    border: 3px;
+    border-style:solid;
+    border-radius: 30px;
+    padding: 10px;
+}
+
+.wel1{
+    text-align: center;
+    font-family: monospace;
+}
+
+.projects{
+    border: 3px;
+    border-style: solid;
+    border-radius: 20px;
+    height: 300px;
+}
+
+.proHeader{
+    font-family: monospace;
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: row;
+}
+
+.searchBox{
+    border: 3px;
+    border-style: solid;
+    border-radius: 10px;
+    margin-left: auto;
+    align-self: center;     /* important */
+    padding: 10px;
 }
