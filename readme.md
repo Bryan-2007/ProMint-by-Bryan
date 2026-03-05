@@ -38,7 +38,7 @@ Since the NFT is non-transferable, it acts as a permanent proof of achievement.
 🛠 Tech Stack
 
 - Solidity (Smart Contract)
-- Foundry (Development & Deployment)
+- Hardhat (Development & Deployment)
 - MetaMask (Wallet Interaction)
 - Sepolia Testnet (Blockchain Network)
 - HTML, CSS, JavaScript (Frontend)
