@@ -19,7 +19,6 @@ closeBtn.onclick = function(){
 
 const searchBox = document.querySelector(".walletSearch");
 const walletOptionsPopup = document.querySelector(".wallet-options-popup");
-const walletOption = document.querySelector(".wallet-options-popup *");
 
 searchBox.onclick = function(){
     walletOptionsPopup.style.display = "block";
@@ -31,5 +30,12 @@ window.onclick = function(event){      /*Capture clicks on other than wallet opt
     }
 };
 
-walletOption.onclick = function(){
+// Login options for option 1 - metamask
+
+const metamaskWallet = document.querySelector(".wallet1");
+
+metamaskWallet.onclick = async function(){
+    if (typeof window.ethereum) {
+        
+    }
 }
