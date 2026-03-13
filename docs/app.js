@@ -1,8 +1,8 @@
-// Login popup js
+// Login popup js - logging in
 
 const loginBtn = document.querySelector(".login-button");
 const popup = document.querySelector(".login-popup");
-const closeBtn = document.querySelector(".back");
+const closeBtn = document.querySelector(".back-button");
 const blur_effect = document.querySelector(".blur-effect");
 
 loginBtn.onclick = function(){
@@ -63,5 +63,17 @@ function getWalletAddress() {
     const wallet = localStorage.getItem("wallet");
 
     document.querySelector(".wallet-address").innerHTML = "Connected wallet address: " + wallet.slice(0, 6) + "..." + wallet.slice(-4);
+}
+
+// function to logout the connected wallet
+
+function logout() {
+    localStorage.removeItem("wallet");
+
+    const wallet = localStorage.getItem("wallet");
+
+        if(!wallet){
+            window.location.href = "home.html";
+        }
 }
 
