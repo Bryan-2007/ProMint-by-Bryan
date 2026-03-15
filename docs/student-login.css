@@ -63,7 +63,7 @@
     border-radius: 7px;
 }
 
-.mint-button{
+.new-project-button{
     background-color: rgb(209, 87, 47);
     border-radius: 10px;
     padding: 7px;
@@ -73,33 +73,33 @@
     font-weight: bolder;
 }
 
-.mint-button:hover{
+.new-project-button:hover{
     transform: scale(1.01);
     background-color: rgb(215, 78, 33);
     border: solid black 1px;
 }
 
-.mint-project{
+.new-project{
     padding: 17px;
 }
 
-.mint-project-footer{
+.new-project-footer{
     display: flex;
     margin-left: 47%;
     margin-right: 10%;
     justify-content: space-between;
 }
 
-.submit, .cancel{
+.new-project-submit, .cancel{
     border: solid black 1px;
     padding: 3px;
 }
 
-.mint-project{
+.new-project{
     display:none;
     border: solid brown 1px;
     height: 130px;
-    width: 70%;
+    width: 80%;
     background-color: rgb(229, 93, 93);
     font-family: cursive;
 }

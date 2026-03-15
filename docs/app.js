@@ -87,10 +87,10 @@ function logout() {
         }
 }
 
-// js for popup of mint button
+// js to open the popup of mint button
 
-const mintButton = document.querySelector(".mint-button");
-const mintProject = document.querySelector(".mint-project");
+const mintButton = document.querySelector(".new-project-button");
+const mintProject = document.querySelector(".new-project");
 
 if (mintButton) {
     mintButton.onclick = function(){
@@ -104,6 +104,37 @@ const cancelBtn = document.querySelector(".cancel");
 
 if(cancelBtn){
     cancelBtn.onclick = function(){
+        mintProject.style.display = "none";
+    }
+}
+
+// function to add a new project
+
+const mintSubmit = document.querySelector(".new-project-submit");
+
+if(mintSubmit){
+    mintSubmit.onclick = function(){
+        const projectTitle = document.getElementById("project-title").value.trim();
+        const projectDesc = document.getElementById("project-desc").value.trim();
+        const projectDate = document.getElementById("date-completed").value.trim();
+
+        // Check if all inputs are filled
+        if (!projectTitle || !projectDesc || !projectDate) {
+            alert("Please fill in all fields before submitting.");
+            return;
+        }
+
+        // Update the display-project section
+        document.querySelector(".display-project .project-name").innerHTML = projectTitle;
+        document.querySelector(".display-project .project-desc").innerHTML = projectDesc;
+        document.querySelector(".display-project .project-date").innerHTML = projectDate;
+
+        // Clear the inputs
+        document.getElementById("project-title").value = "";
+        document.getElementById("project-desc").value = "";
+        document.getElementById("date-completed").value = "";
+
+        // Hide the new project popup
         mintProject.style.display = "none";
     }
 }
