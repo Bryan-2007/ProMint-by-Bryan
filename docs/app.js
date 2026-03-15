@@ -5,14 +5,18 @@ const popup = document.querySelector(".login-popup");
 const closeBtn = document.querySelector(".back-button");
 const blur_effect = document.querySelector(".blur-effect");
 
-loginBtn.onclick = function(){
-    popup.style.display = "block";
-    blur_effect.style.display = "block"
+if (loginBtn) {
+    loginBtn.onclick = function(){
+        popup.style.display = "block";
+        blur_effect.style.display = "block"
+    }
 }
 
-closeBtn.onclick = function(){
-    popup.style.display = "none";
-    blur_effect.style.display = "none";
+if (closeBtn) {
+    closeBtn.onclick = function(){
+        popup.style.display = "none";
+        blur_effect.style.display = "none";
+    }
 }
 
 // Search box js
@@ -20,40 +24,44 @@ closeBtn.onclick = function(){
 const searchBox = document.querySelector(".walletSearch");
 const walletOptionsPopup = document.querySelector(".wallet-options-popup");
 
-searchBox.onclick = function(){
-    walletOptionsPopup.style.display = "block";
-}
-
-window.onclick = function(event){      /*Capture clicks on other than wallet options*/
-    if (!searchBox.contains(event.target) && !walletOptionsPopup.contains(event.target)) {
-        walletOptionsPopup.style.display = "none";
+if (walletOptionsPopup && searchBox) {
+    searchBox.onclick = function(){
+        walletOptionsPopup.style.display = "block";
     }
-};
+
+    window.onclick = function(event){      /*Capture clicks on other than wallet options*/
+        if (!searchBox.contains(event.target) && !walletOptionsPopup.contains(event.target)) {
+            walletOptionsPopup.style.display = "none";
+        }
+    };
+}
 
 // Login options for option 1 - metamask
 
 const metamaskWallet = document.querySelector(".wallet1");
 
-metamaskWallet.onclick = async function(){
-    if (typeof window.ethereum == "undefined") {
-        alert("Metamask wallet extension not found!");
-        return;
-    }
+if (metamaskWallet) {
+    metamaskWallet.onclick = async function(){
+        if (typeof window.ethereum == "undefined") {
+            alert("Metamask wallet extension not found!");
+            return;
+        }
 
-    try{
-        const accounts = await window.ethereum.request({
-            method: "eth_requestAccounts"
-        });
+        try{
+            const accounts = await window.ethereum.request({
+                method: "eth_requestAccounts"
+            });
 
-        const walletAddress = accounts[0];
+            const walletAddress = accounts[0];
 
-        console.log("Connected wallet address: ", walletAddress);
-        localStorage.setItem("wallet", walletAddress);
-        window.location.href = "login.html";
-    }
+            console.log("Connected wallet address: ", walletAddress);
+            localStorage.setItem("wallet", walletAddress);
+            window.location.href = "login.html";
+        }
 
-    catch(error){
-        console.log("User did not approve request to log in");
+        catch(error){
+            console.log("User did not approve request to log in");
+        }
     }
 }
 
@@ -62,7 +70,9 @@ metamaskWallet.onclick = async function(){
 function getWalletAddress() {
     const wallet = localStorage.getItem("wallet");
 
-    document.querySelector(".wallet-address").innerHTML = "Connected Wallet - " + wallet.slice(0, 6) + "..." + wallet.slice(-4);
+    if (wallet) {
+        document.querySelector(".wallet-address").innerHTML = "Connected Wallet - " + wallet.slice(0, 6) + "..." + wallet.slice(-4);
+    }
 }
 
 // function to logout the connected wallet
@@ -77,3 +87,23 @@ function logout() {
         }
 }
 
+// js for popup of mint button
+
+const mintButton = document.querySelector(".mint-button");
+const mintProject = document.querySelector(".mint-project");
+
+if (mintButton) {
+    mintButton.onclick = function(){
+        mintProject.style.display = "block";
+    }
+}
+
+// js to close popup of mint button
+
+const cancelBtn = document.querySelector(".cancel");
+
+if(cancelBtn){
+    cancelBtn.onclick = function(){
+        mintProject.style.display = "none";
+    }
+}
