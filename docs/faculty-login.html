@@ -5,39 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Faculty Login</title>
+    <link rel="stylesheet" href="student-login.css">
 </head>
 
-<body>
-    
+<body class="body" onload="getWalletAddress(); renderFacultyDashboard()">
+    <section class="header">
+        <div>Faculty Dashboard</div>
+
+        <div class="logout" onclick="logout()">Logout</div>
+    </section><br>
+
+    <section class="user-info">
+        <h3 class="wallet-address"></h3> <!--inserted using .js file-->
+    </section><br>
+
     <section class="projects">
-        <div class="projects-header">YOUR PROJECTS</div>
+        <div class="projects-header">ALL STUDENT PROJECTS</div>
         <hr class="hr1">
 
         <div class="projects-options">
             <input type="text" class="projects-search" placeholder="Type project name...">
-            
-            <div class="mint-button">New Project +</div>
-        </div><hr class="hr2">
+        </div>
+        <hr class="hr2">
 
-        <div class="mint-project">
-            <div class="mint-options">
-                <label for="wallet-address" class="wallet-add">Enter Wallet Address</label>
-                <input type="text" id="wallet-address" placeholder="eg. 0x3...8A3"><br>
-
-                <label for="project-review" class="pro-review">Enter Project Review</label>
-                <input type="text" id="project-review" placeholder="eg. innovative, good"><br>
-
-                <label for="designation" class="minter-desig">Enter Your Designation</label>
-                <input type="text" id="designation" placeholder="eg. associate professor IT"><br><br>
-            </div>
-            
-            <div class="mint-project-footer">
-                <div class="submit">Submit</div>
-                <div class="cancel">Cancel</div>
-            </div>
+        <div class="display-all-projects">
+            <!-- Dynamically populated by app.js -->
         </div>
     </section>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+    <script src="app.js"></script>
 </body>
 
 </html>

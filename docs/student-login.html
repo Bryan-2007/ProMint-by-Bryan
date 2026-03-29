@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <link rel="stylesheet" href="student-login.css">
     <meta charset="UTF-8">
@@ -7,7 +8,8 @@
     <title>Dashboard</title>
 </head>
 
-<body class="body" onload="getWalletAddress()">    <!-- calls the function when this html page is loaded-->
+<body class="body" onload="getWalletAddress(); renderStudentProjects()">
+    <!-- calls the function when this html page is loaded-->
     <section class="header">
         <div>Dashboard</div>
 
@@ -15,7 +17,7 @@
     </section><br>
 
     <section class="user-info">
-        <h3 class="wallet-address"></h3>    <!--inserted using .js file-->
+        <h3 class="wallet-address"></h3> <!--inserted using .js file-->
     </section><br>
 
     <section class="projects">
@@ -24,22 +26,25 @@
 
         <div class="projects-options">
             <input type="text" class="projects-search" placeholder="Type project name...">
-            
+
             <div class="new-project-button">New Project +</div>
-        </div><hr class="hr2">
+        </div>
+        <hr class="hr2">
+
+        <div class="popup-backdrop"></div>
 
         <div class="new-project">
             <div class="new-project-options">
-                <label for="project-title" class="project-title">Enter Wallet Address</label>
-                <input type="text" id="project-title" placeholder="eg. AI image classifier"><br>
+                <label for="project-name" class="project-title">Project Name</label>
+                <input type="text" id="project-name" placeholder="eg. AI image classifier"><br>
 
-                <label for="project-desc" class="project-desc">Enter Project Description</label>
-                <input type="text" id="project-desc" placeholder="eg. This classifies ... dogs and cats"><br>
+                <label for="project-domains" class="project-desc">Domains</label>
+                <input type="text" id="project-domains" placeholder="eg. Web3, AI, IoT"><br>
 
                 <label for="date-completed" class="date-completed">Date Completed</label>
                 <input type="text" id="date-completed" placeholder="eg. 13th Jan 2024"><br><br>
             </div>
-            
+
             <div class="new-project-footer">
                 <div class="new-project-submit">Submit</div>
                 <div class="cancel">Cancel</div>
@@ -47,14 +52,11 @@
         </div>
 
         <div class="display-project">
-            <div class="project-row">
-            <div class="project-name"></div>
-            <div class="project-desc"></div>
-            <div class="project-date"></div>
-            </div>
+            <!-- Will be populated by JS -->
         </div>
     </section>
 
+    <!-- Include ethers if needed, though strictly we mint from faculty -->
     <script src="app.js"></script>
 </body>
 
