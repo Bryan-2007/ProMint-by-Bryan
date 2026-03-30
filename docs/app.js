@@ -1,26 +1,96 @@
 // ==================== CONTRACT CONFIGURATION ====================
 // IMPORTANT: Update these values after deploying the contract to Sepolia
 
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000"; // Replace with deployed address
+// Check if ethers is loaded
+if (typeof ethers === "undefined") {
+    console.error("CRITICAL: ethers library not loaded!");
+    alert("ERROR: ethers library failed to load. Please check your internet connection or try refreshing the page.");
+}
+
+const CONTRACT_ADDRESS = "0x7580cEE2A2B474B73951B231782355432F577857"; // Replace with deployed address
 const CONTRACT_ABI = [
     {
-        "inputs": [],
-        "name": "createProject",
-        "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-        "stateMutability": "nonpayable",
-        "type": "function",
-        "constant": false,
-        "payable": false,
+        "anonymous": false,
         "inputs": [
-            {"name": "_name", "type": "string"},
-            {"name": "_domains", "type": "string"},
-            {"name": "_date", "type": "string"}
-        ]
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "projectId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "studentWallet",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProjectCreated",
+        "type": "event"
     },
     {
-        "inputs": [{"internalType": "uint256", "name": "_projectId", "type": "uint256"}],
-        "name": "mintProject",
-        "outputs": [],
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "projectId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "facultyWallet",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "timestamp",
+                "type": "uint256"
+            }
+        ],
+        "name": "ProjectMinted",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_domains",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "_date",
+                "type": "string"
+            }
+        ],
+        "name": "createProject",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -30,13 +100,41 @@ const CONTRACT_ABI = [
         "outputs": [
             {
                 "components": [
-                    {"internalType": "uint256", "name": "id", "type": "uint256"},
-                    {"internalType": "string", "name": "name", "type": "string"},
-                    {"internalType": "string", "name": "domains", "type": "string"},
-                    {"internalType": "string", "name": "date", "type": "string"},
-                    {"internalType": "address", "name": "studentWallet", "type": "address"},
-                    {"internalType": "bool", "name": "minted", "type": "bool"},
-                    {"internalType": "uint256", "name": "timestamp", "type": "uint256"}
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "domains",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "date",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "studentWallet",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "minted",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "timestamp",
+                        "type": "uint256"
+                    }
                 ],
                 "internalType": "struct ProMint.Project[]",
                 "name": "",
@@ -47,18 +145,121 @@ const CONTRACT_ABI = [
         "type": "function"
     },
     {
-        "inputs": [{"internalType": "address", "name": "_studentWallet", "type": "address"}],
+        "inputs": [],
+        "name": "getFacultyWallet",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_projectId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getProject",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "domains",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "date",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "studentWallet",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "minted",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "timestamp",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct ProMint.Project",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_studentWallet",
+                "type": "address"
+            }
+        ],
         "name": "getStudentProjects",
         "outputs": [
             {
                 "components": [
-                    {"internalType": "uint256", "name": "id", "type": "uint256"},
-                    {"internalType": "string", "name": "name", "type": "string"},
-                    {"internalType": "string", "name": "domains", "type": "string"},
-                    {"internalType": "string", "name": "date", "type": "string"},
-                    {"internalType": "address", "name": "studentWallet", "type": "address"},
-                    {"internalType": "bool", "name": "minted", "type": "bool"},
-                    {"internalType": "uint256", "name": "timestamp", "type": "uint256"}
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "domains",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "date",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "studentWallet",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "minted",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "timestamp",
+                        "type": "uint256"
+                    }
                 ],
                 "internalType": "struct ProMint.Project[]",
                 "name": "",
@@ -66,6 +267,45 @@ const CONTRACT_ABI = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTotalProjects",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_projectId",
+                "type": "uint256"
+            }
+        ],
+        "name": "mintProject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_newFaculty",
+                "type": "address"
+            }
+        ],
+        "name": "updateFacultyWallet",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     }
 ];
@@ -77,21 +317,88 @@ let signer = null;
 
 // Initialize contract connection
 async function initializeContract() {
-    if (typeof window.ethereum === "undefined") {
-        console.log("MetaMask not installed, using fallback");
+    console.log("=== initializeContract called ===");
+    
+    // Verify ethers is available
+    if (typeof ethers === "undefined") {
+        console.error("ethers library is not loaded!");
+        alert("ERROR: ethers library failed to load. Please refresh the page.");
         return false;
     }
+    
+    if (typeof window.ethereum === "undefined") {
+        console.error("MetaMask not installed");
+        alert("Please install MetaMask extension.");
+        return false;
+    }
+    
+    console.log("MetaMask detected:", window.ethereum);
 
     try {
-        provider = new ethers.providers.Web3Provider(window.ethereum);
+        console.log("ethers is available, creating BrowserProvider...");
+        console.log("ethers version/type:", typeof ethers, Object.keys(ethers).slice(0, 5));
+        
+        provider = new ethers.BrowserProvider(window.ethereum);
+        console.log("BrowserProvider created successfully");
+        
+        console.log("Requesting accounts...");
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        console.log("Connected accounts:", accounts);
+        
+        if (!accounts || accounts.length === 0) {
+            console.error("No accounts connected");
+            alert("Please connect your MetaMask wallet.");
+            return false;
+        }
+        
+        console.log("Getting network...");
+        const network = await provider.getNetwork();
+        console.log("Current network:", network);
+        console.log("Current network chainId:", network.chainId, "Type:", typeof network.chainId);
+        
+        if (network.chainId !== 11155111n) {
+            console.error("Wrong network. Expected 11155111, got", network.chainId);
+            alert("Please switch to Sepolia testnet in MetaMask. Current network: " + network.name);
+            return false;
+        }
+        
+        console.log("Network is correct (Sepolia), getting signer...");
         signer = await provider.getSigner();
+        console.log("Signer obtained:", await signer.getAddress());
+        
+        console.log("Creating contract instance with address:", CONTRACT_ADDRESS);
+        if (CONTRACT_ADDRESS === "0x0000000000000000000000000000000000000000") {
+            console.error("Contract address is not set!");
+            alert("Contract address not configured. Please check app.js");
+            return false;
+        }
+        
         contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
         console.log("Contract initialized successfully");
+        
         return true;
     } catch (error) {
         console.error("Failed to initialize contract:", error);
+        console.error("Error stack:", error.stack);
+        alert("Error connecting to blockchain: " + error.message);
         return false;
     }
+}
+
+// Listen for network changes
+if (typeof window.ethereum !== "undefined") {
+    window.ethereum.on('chainChanged', (chainId) => {
+        console.log("Network changed to:", chainId);
+        // Reload the page when network changes
+        window.location.reload();
+    });
+    
+    window.ethereum.on('accountsChanged', (accounts) => {
+        console.log("Accounts changed:", accounts);
+        if (accounts.length === 0) {
+            console.log("No accounts connected");
+        }
+    });
 }
 
 // ==================== LOGIN POPUP ====================
@@ -338,14 +645,16 @@ async function renderStudentProjects() {
             row.className = "project-row";
             row.style.border = "1px solid #ccc";
             row.style.margin = "10px 0";
-            row.style.padding = "10px";
+            row.style.padding = "15px";
             row.style.borderRadius = "5px";
+            row.style.backgroundColor = "#f9f9f9";
+
             row.innerHTML = `
-                <div class="project-name" style="font-weight: bold; font-size: 1.2em;">${p.name}</div>
-                <div class="project-desc">Domains: ${p.domains}</div>
-                <div class="project-date">Completed: ${p.date}</div>
-                <div class="project-status" style="margin-top: 5px; color: ${p.minted ? 'green' : 'orange'}">
-                    Status: ${p.minted ? 'NFT Minted (Non-transferrable)' : 'Pending Mint'}
+                <div class="project-name" style="font-weight: bold; font-size: 1.2em; margin-bottom: 8px;">${p.name}</div>
+                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Domains: ${p.domains}</div>
+                <div class="project-date" style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Completed: ${p.date}</div>
+                <div class="project-status" style="margin-top: 8px; color: ${p.minted ? 'green' : 'orange'}; font-weight: 500;">
+                    Status: ${p.minted ? '✓ NFT Minted (Non-transferrable)' : '⏳ Pending Mint'}
                 </div>
             `;
             displayProject.appendChild(row);
@@ -414,19 +723,27 @@ if (projectSearch && document.querySelector(".display-project")) {
 // ==================== RENDER FACULTY PROJECTS ====================
 
 async function renderFacultyDashboard() {
+    console.log("=== renderFacultyDashboard called ===");
     const displayAll = document.querySelector(".display-all-projects");
-    if (!displayAll) return;
+    if (!displayAll) {
+        console.error("display-all-projects element not found");
+        return;
+    }
 
     try {
         if (!contract) {
+            console.log("Contract not initialized, initializing...");
             const initialized = await initializeContract();
             if (!initialized) {
-                displayAll.innerHTML = "<p style='text-align: center; color: #999;'>Unable to connect to blockchain</p>";
+                console.error("Failed to initialize contract");
+                displayAll.innerHTML = "<p style='text-align: center; color: #999;'>Unable to connect to blockchain. Please check console for details.</p>";
                 return;
             }
         }
 
+        console.log("Calling getAllProjects...");
         const projects = await contract.getAllProjects();
+        console.log("Projects retrieved:", projects);
 
         displayAll.innerHTML = "";
         if (projects.length === 0) {
@@ -439,51 +756,64 @@ async function renderFacultyDashboard() {
             row.className = "project-row";
             row.style.border = "1px solid #ccc";
             row.style.margin = "10px 0";
-            row.style.padding = "10px";
+            row.style.padding = "15px";
             row.style.borderRadius = "5px";
             row.style.display = "flex";
             row.style.justifyContent = "space-between";
-            row.style.alignItems = "center";
+            row.style.alignItems = "flex-start";
+            row.style.gap = "20px";
 
-            row.innerHTML = `
-                <div>
-                    <div class="project-name" style="font-weight: bold; font-size: 1.2em;">${p.name}</div>
-                    <div class="project-desc">Student: ${p.studentWallet}</div>
-                    <div class="project-desc">Domains: ${p.domains}</div>
-                    <div class="project-date">Completed: ${p.date}</div>
-                    <div class="project-status" style="margin-top: 5px; color: ${p.minted ? 'green' : 'orange'}">
-                        Status: ${p.minted ? 'NFT Minted (Non-transferrable)' : 'Pending Mint'}
-                    </div>
+            const detailsDiv = document.createElement("div");
+            detailsDiv.style.flex = "1";
+            detailsDiv.style.minWidth = "0";
+
+            detailsDiv.innerHTML = `
+                <div class="project-name" style="font-weight: bold; font-size: 1.2em; margin-bottom: 8px;">${p.name}</div>
+                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Student: <span style="font-family: monospace;">${p.studentWallet}</span></div>
+                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Domains: ${p.domains}</div>
+                <div class="project-date" style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Completed: ${p.date}</div>
+                <div class="project-status" style="margin-top: 8px; color: ${p.minted ? 'green' : 'orange'}; font-weight: 500;">
+                    Status: ${p.minted ? '✓ NFT Minted' : '⏳ Pending Mint'}
                 </div>
             `;
+
+            row.appendChild(detailsDiv);
+
+            const buttonDiv = document.createElement("div");
+            buttonDiv.style.display = "flex";
+            buttonDiv.style.gap = "10px";
+            buttonDiv.style.flexShrink = "0";
 
             if (!p.minted) {
                 const btn = document.createElement("button");
                 btn.innerText = "Mint Project";
-                btn.style.padding = "10px";
+                btn.style.padding = "10px 15px";
                 btn.style.backgroundColor = "#4CAF50";
                 btn.style.color = "white";
                 btn.style.border = "none";
                 btn.style.cursor = "pointer";
                 btn.style.borderRadius = "5px";
                 btn.onclick = () => mintProjectNFT(p.id);
-                row.appendChild(btn);
+                buttonDiv.appendChild(btn);
             } else {
                 const btn = document.createElement("div");
                 btn.innerText = "Minted";
-                btn.style.padding = "10px";
+                btn.style.padding = "10px 15px";
                 btn.style.backgroundColor = "transparent";
                 btn.style.color = "green";
                 btn.style.border = "1px solid green";
                 btn.style.borderRadius = "5px";
-                row.appendChild(btn);
+                btn.style.fontWeight = "500";
+                buttonDiv.appendChild(btn);
             }
 
+            row.appendChild(buttonDiv);
             displayAll.appendChild(row);
         });
     } catch (error) {
         console.error("Error fetching faculty projects:", error);
-        displayAll.innerHTML = "<p style='text-align: center; color: red;'>Error loading projects</p>";
+        console.error("Error stack:", error.stack);
+        displayAll.innerHTML = "<p style='text-align: center; color: red;'>Error loading projects: " + error.message + "</p>";
     }
 }
 
