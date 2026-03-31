@@ -8,7 +8,10 @@
     <title>Dashboard</title>
 </head>
 
-<body class="body" onload="getWalletAddress(); renderStudentProjects()">
+<body class="body" onload="getWalletAddress(); renderStudentProjects(); showLoginSuccessToast()">
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
     <!-- calls the function when this html page is loaded-->
     <section class="header">
         <div>Dashboard</div>

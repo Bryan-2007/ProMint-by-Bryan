@@ -441,6 +441,31 @@ if (walletOptionsPopup && searchBox) {
 
 // ==================== METAMASK LOGIN ====================
 
+// Toast notification function
+function showToast(message, icon, type = 'loading', duration = 3000) {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) return null;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+        <span class="toast-icon">${icon}</span>
+        <span class="toast-message">${message}</span>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after duration (only for success toasts, loading toasts stay until manually removed)
+    if (type === 'success') {
+        setTimeout(() => {
+            toast.classList.add('remove');
+            setTimeout(() => toast.remove(), 300);
+        }, duration);
+    }
+    
+    return toast;
+}
+
 const metamaskWallet = document.querySelector(".wallet1");
 
 if (metamaskWallet) {
@@ -461,7 +486,14 @@ if (metamaskWallet) {
             localStorage.setItem("wallet", walletAddress);
 
             const FACULTY_WALLET = "0x26839094202c7582DE5279eB61239B55C481Fe2d".toLowerCase();
-            if (walletAddress.toLowerCase() === FACULTY_WALLET) {
+            const isFaculty = walletAddress.toLowerCase() === FACULTY_WALLET;
+            
+            // Set flag to show success toast on dashboard
+            localStorage.setItem("showLoginToast", "true");
+            localStorage.setItem("userType", isFaculty ? "faculty" : "student");
+
+            // Redirect to appropriate page
+            if (isFaculty) {
                 window.location.href = "faculty-login.html";
             } else {
                 window.location.href = "student-login.html";
@@ -471,6 +503,16 @@ if (metamaskWallet) {
         catch (error) {
             console.log("User did not approve request to log in");
         }
+    }
+}
+
+// Show login success toast on dashboard if flagged
+function showLoginSuccessToast() {
+    if (localStorage.getItem("showLoginToast") === "true") {
+        const userType = localStorage.getItem("userType") || "user";
+        showToast(`Logged in as ${userType} ✓`, '✓', 'success', 2500);
+        localStorage.removeItem("showLoginToast");
+        localStorage.removeItem("userType");
     }
 }
 
@@ -938,3 +980,79 @@ async function mintProjectNFT(projectId) {
 window.addEventListener('load', async function () {
     await initializeContract();
 });
+
+// ==================== JOURNEY POPUP ====================
+
+// Get journey popup elements
+const journeyPopupOverlay = document.querySelector(".journey-popup-overlay");
+const journeyPopupClose = document.querySelector(".journey-popup-close");
+const getStartedButtons = document.querySelectorAll(".btn-primary.login-button, .login-button");
+
+// Open journey popup when "Get Started" button is clicked
+getStartedButtons.forEach(button => {
+    button.addEventListener("click", function (e) {
+        // Check if it's the hero section "Get Started" button (first one in hero-buttons)
+        if (button.closest(".hero-buttons")) {
+            e.preventDefault();
+            journeyPopupOverlay.classList.add("active");
+        }
+    });
+});
+
+// Close journey popup when close button is clicked
+if (journeyPopupClose) {
+    journeyPopupClose.addEventListener("click", function () {
+        journeyPopupOverlay.classList.remove("active");
+    });
+}
+
+// Close journey popup when clicking on the overlay background
+if (journeyPopupOverlay) {
+    journeyPopupOverlay.addEventListener("click", function (e) {
+        if (e.target === journeyPopupOverlay) {
+            journeyPopupOverlay.classList.remove("active");
+        }
+    });
+}
+
+// ==================== THEME TOGGLE ====================
+
+const themeToggle = document.getElementById("themeToggle");
+const htmlElement = document.documentElement;
+const bodyElement = document.body;
+
+// Load theme preference from localStorage
+function loadTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        htmlElement.classList.add("dark-mode");
+        bodyElement.classList.add("dark-mode");
+        themeToggle.textContent = "☀️";
+    } else {
+        htmlElement.classList.remove("dark-mode");
+        bodyElement.classList.remove("dark-mode");
+        themeToggle.textContent = "🌙";
+    }
+}
+
+// Toggle theme
+if (themeToggle) {
+    themeToggle.addEventListener("click", function () {
+        if (htmlElement.classList.contains("dark-mode")) {
+            // Switch to light mode
+            htmlElement.classList.remove("dark-mode");
+            bodyElement.classList.remove("dark-mode");
+            localStorage.setItem("theme", "light");
+            themeToggle.textContent = "🌙";
+        } else {
+            // Switch to dark mode
+            htmlElement.classList.add("dark-mode");
+            bodyElement.classList.add("dark-mode");
+            localStorage.setItem("theme", "dark");
+            themeToggle.textContent = "☀️";
+        }
+    });
+}
+
+// Load theme on page load
+loadTheme();

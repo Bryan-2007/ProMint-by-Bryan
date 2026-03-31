@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="student-login.css">
 </head>
 
-<body class="body" onload="getWalletAddress(); renderFacultyDashboard()">
+<body class="body" onload="getWalletAddress(); renderFacultyDashboard(); showLoginSuccessToast()">
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
     <section class="header">
         <div>Faculty Dashboard</div>
 

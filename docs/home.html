@@ -4,66 +4,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProMint</title>
+    <title>ProMint - Get Your Projects Minted on Blockchain</title>
     <link rel="stylesheet" href="home.css">
 </head>
 
 <body class="body">
-    <section class="menu">
-        <div class="logo">
-            <img src="../assets/logo.png" alt="cannot display image" class="image">
-        </div>
-        <nav class='navbar'>
-            <div class="n1">Home</div>
-            <div class="n2">Explore</div>
-            <div class="n3">
-                <div class="login-button">Login</div>
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-container"></div>
 
-                <div class="blur-effect"></div> <!--To add blur effect to an empty but full page spanning element-->
-
-                <div class="login-popup">
-                    <div class="login-popup-header">LOGIN WITH WALLET</div>
-
-                    <div class="login-popup-content">
-                        <br>
-                        <input type="text" class="walletSearch" placeholder="Search your wallet...">
-
-                        <div class="wallet-options-popup">
-                            <div class="wallet1">Metamask</div>
-                            <div class="wallet2">Coinbase</div>
-                            <div class="wallet3">Trust Wallet</div>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <img src="../assets/logo.png" alt="ProMint Logo" class="logo-image">
+                <span class="logo-text">ProMint</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <button class="login-button">Connect Wallet</button>
+                <button class="theme-toggle-button" id="themeToggle">🌙</button>
+            </div>
+            <div class="blur-effect"></div>
+            <div class="login-popup">
+                <div class="login-popup-header">Connect Your Wallet</div>
+                <div class="login-popup-content">
+                    <p class="popup-subtitle">Choose your preferred wallet to get started</p>
+                    <div class="wallet-options-popup">
+                        <div class="wallet-option wallet1">
+                            <span class="wallet-icon">🦊</span>
+                            <span>MetaMask</span>
                         </div>
-
-                        <br><br>
-                        <div class="back-button">Back</div>
+                        <div class="wallet-option wallet2">
+                            <span class="wallet-icon">₿</span>
+                            <span>Coinbase</span>
+                        </div>
+                        <div class="wallet-option wallet3">
+                            <span class="wallet-icon">✓</span>
+                            <span>Trust Wallet</span>
+                        </div>
                     </div>
+                    <button class="back-button">Back</button>
                 </div>
             </div>
-        </nav>
-    </section>
+        </div>
+    </nav>
 
-    <br>
-
-    <section class="intro">
-        <h1 class="wel1">- - - Welcome to ProMint - - -<br><br>
-            Get Your Projects Minted, Become Celebrated!
-        </h1>
-    </section>
-
-    <br><br>
-    <section class="project-display">
-        <h1 class="wardrobe-title">Top Projects</h1>
-        <br>
-
-        <div class="wardrobe">
-            <div class="pro1"></div>
-            <div class="pro2"></div>
-            <div class="pro3"></div>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1 class="hero-title">Mint Your Projects,<br>Get Recognized</h1>
+            <p class="hero-subtitle">ProMint brings your academic and professional projects to the blockchain. Showcase your work, mint NFTs, and build your digital portfolio on Sepolia testnet.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary login-button">Get Started</button>
+                <button class="btn btn-secondary">Learn More</button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="gradient-orb orb-1"></div>
+            <div class="gradient-orb orb-2"></div>
         </div>
     </section>
 
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-header">
+            <h2>Why Choose ProMint?</h2>
+            <p>Everything you need to showcase your work on blockchain</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>Easy Project Creation</h3>
+                <p>Create and manage your projects with a simple, intuitive interface. Add details, domains, and completion dates effortlessly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⛓️</div>
+                <h3>Blockchain Powered</h3>
+                <p>Built on Sepolia testnet with smart contracts. Your projects are secured and verifiable on the blockchain.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎫</div>
+                <h3>NFT Certificates</h3>
+                <p>Get your projects minted as non-transferrable NFTs. A permanent record of your achievements on the blockchain.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔐</div>
+                <h3>Secure & Verified</h3>
+                <p>Faculty-verified project minting ensures authenticity. Only approved projects become NFTs.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌐</div>
+                <h3>Web3 Ready</h3>
+                <p>Native MetaMask integration. Connect your wallet and start minting instantly.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Display Your Portfolio</h3>
+                <p>Showcase all your minted projects in one place. Build your professional digital identity.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Projects Section -->
+    <section class="projects-section" id="projects">
+        <div class="projects-header">
+            <h2>Featured Projects</h2>
+            <p>Recent projects minted on ProMint</p>
+        </div>
+        <div class="projects-container">
+            <div class="project-card">
+                <div class="project-placeholder"></div>
+                <div class="project-info">
+                    <h3>AI Image Classifier</h3>
+                    <p class="project-domains">Machine Learning, AI, Computer Vision</p>
+                    <span class="project-status status-minted">✓ Minted</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-placeholder"></div>
+                <div class="project-info">
+                    <h3>Web3 DApp</h3>
+                    <p class="project-domains">Blockchain, Web3, Smart Contracts</p>
+                    <span class="project-status status-pending">⏳ Pending</span>
+                </div>
+            </div>
+            <div class="project-card">
+                <div class="project-placeholder"></div>
+                <div class="project-info">
+                    <h3>IoT Home System</h3>
+                    <p class="project-domains">IoT, Embedded Systems, Python</p>
+                    <span class="project-status status-minted">✓ Minted</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Mint Your First Project?</h2>
+        <p>Join students and professionals building their portfolios on the blockchain.</p>
+        <button class="btn btn-primary btn-large login-button">Connect Wallet & Start</button>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>ProMint</h4>
+                <p>Minting amazing projects on the blockchain.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Links</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#projects">Projects</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Network</h4>
+                <p>Built on Sepolia Testnet</p>
+                <p class="contract-address">Contract: 0x7580...7857</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ProMint. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Project Journey Popup -->
+    <div id="journeyPopup" class="journey-popup-overlay">
+        <div class="journey-popup">
+            <button class="journey-popup-close">&times;</button>
+            <h2 class="journey-popup-title">Your Project Journey</h2>
+            <div class="journey-path">
+                <div class="journey-step">
+                    <div class="journey-emoji">📝</div>
+                    <div class="journey-label">Project Created</div>
+                </div>
+                <div class="journey-arrow">→</div>
+                <div class="journey-step">
+                    <div class="journey-emoji">⛓️</div>
+                    <div class="journey-label">Project Minted</div>
+                </div>
+                <div class="journey-arrow">→</div>
+                <div class="journey-step">
+                    <div class="journey-emoji">✓</div>
+                    <div class="journey-label">Project Reviewed</div>
+                </div>
+                <div class="journey-arrow">→</div>
+                <div class="journey-step">
+                    <div class="journey-emoji">🎉</div>
+                    <div class="journey-label">Everyone Impressed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://unpkg.com/ethers@6.11.1/dist/ethers.umd.min.js"></script>
-    <script src="app.js"></script> <!-- script should be at the bottom, because the html elements don't exist yet -->
+    <script src="app.js"></script>
 </body>
 
 </html>
