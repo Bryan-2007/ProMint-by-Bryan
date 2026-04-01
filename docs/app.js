@@ -552,6 +552,42 @@ function getWalletAddress() {
     }
 }
 
+// ==================== DISPLAY CONTRACT ADDRESS ====================
+
+function displayContractAddress() {
+    const contractAddressElement = document.querySelector(".contract-address");
+    
+    if (contractAddressElement) {
+        const contractDisplay = CONTRACT_ADDRESS.slice(0, 6) + "..." + CONTRACT_ADDRESS.slice(-4);
+        contractAddressElement.innerHTML = `
+            ${contractDisplay}
+            <img class="copy-contract" src="../assets/copy-symbol.png" title="Copy contract address" alt="Copy">
+        `;
+
+        // Add copy functionality
+        const copyButton = contractAddressElement.querySelector(".copy-contract");
+        if (copyButton) {
+            copyButton.onclick = function (e) {
+                e.stopPropagation();
+                navigator.clipboard.writeText(CONTRACT_ADDRESS).then(() => {
+                    const originalSrc = copyButton.src;
+                    const checkmarkSVG = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+
+                    copyButton.src = checkmarkSVG;
+                    copyButton.style.filter = "drop-shadow(0 0 2px green)";
+
+                    setTimeout(() => {
+                        copyButton.src = originalSrc;
+                        copyButton.style.filter = "none";
+                    }, 1500);
+                }).catch(() => {
+                    alert("Failed to copy contract address");
+                });
+            };
+        }
+    }
+}
+
 // ==================== LOGOUT ====================
 
 function logout() {
@@ -560,7 +596,7 @@ function logout() {
     const wallet = localStorage.getItem("wallet");
 
     if (!wallet) {
-        window.location.href = "home.html";
+        window.location.href = "index.html";
     }
 }
 
@@ -705,6 +741,9 @@ async function renderStudentProjects() {
         console.error("Error fetching student projects:", error);
         displayProject.innerHTML = "<p style='text-align: center; color: red;'>Error loading projects</p>";
     }
+    
+    // Display contract address
+    displayContractAddress();
 }
 
 // ==================== SEARCH STUDENT PROJECTS ====================
@@ -857,6 +896,9 @@ async function renderFacultyDashboard() {
         console.error("Error stack:", error.stack);
         displayAll.innerHTML = "<p style='text-align: center; color: red;'>Error loading projects: " + error.message + "</p>";
     }
+    
+    // Display contract address
+    displayContractAddress();
 }
 
 // ==================== SEARCH FACULTY PROJECTS ====================
@@ -1017,25 +1059,41 @@ if (journeyPopupOverlay) {
 
 // ==================== THEME TOGGLE ====================
 
-const themeToggle = document.getElementById("themeToggle");
 const htmlElement = document.documentElement;
 const bodyElement = document.body;
 
-// Load theme preference from localStorage
-function loadTheme() {
+// Initialize theme on page load
+function initializeTheme() {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {
         htmlElement.classList.add("dark-mode");
         bodyElement.classList.add("dark-mode");
-        themeToggle.textContent = "☀️";
     } else {
         htmlElement.classList.remove("dark-mode");
         bodyElement.classList.remove("dark-mode");
-        themeToggle.textContent = "🌙";
+    }
+}
+
+// Call initialization immediately
+initializeTheme();
+
+// Load theme preference from localStorage (for homepage)
+function loadTheme() {
+    const savedTheme = localStorage.getItem("theme");
+    const themeToggle = document.getElementById("themeToggle");
+    if (savedTheme === "dark") {
+        htmlElement.classList.add("dark-mode");
+        bodyElement.classList.add("dark-mode");
+        if (themeToggle) themeToggle.textContent = "☀️";
+    } else {
+        htmlElement.classList.remove("dark-mode");
+        bodyElement.classList.remove("dark-mode");
+        if (themeToggle) themeToggle.textContent = "🌙";
     }
 }
 
 // Toggle theme
+const themeToggle = document.getElementById("themeToggle");
 if (themeToggle) {
     themeToggle.addEventListener("click", function () {
         if (htmlElement.classList.contains("dark-mode")) {

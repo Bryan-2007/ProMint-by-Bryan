@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Faculty Login</title>
+    <title>Faculty Dashboard - ProMint</title>
     <link rel="stylesheet" href="student-login.css">
 </head>
 
@@ -12,16 +12,28 @@
     <!-- Toast Notification Container -->
     <div id="toastContainer" class="toast-container"></div>
 
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="logo">
+                <img src="../assets/logo.png" alt="ProMint Logo" class="logo-image">
+                <span class="logo-text">ProMint</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <button class="logout" onclick="logout()">Logout</button>
+                <button class="theme-toggle-button" id="themeToggle">🌙</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- User Info and Dashboard Header -->
     <section class="header">
         <div>Faculty Dashboard</div>
-
-        <div class="logout" onclick="logout()">Logout</div>
-    </section><br>
-
-    <section class="user-info">
         <h3 class="wallet-address"></h3> <!--inserted using .js file-->
     </section><br>
 
+    <!-- Projects Section -->
     <section class="projects">
         <div class="projects-header">ALL STUDENT PROJECTS</div>
         <hr class="hr1">
@@ -33,6 +45,14 @@
 
         <div class="display-all-projects">
             <!-- Dynamically populated by app.js -->
+        </div>
+    </section>
+
+    <!-- Contract Address Section (Faculty Only) -->
+    <section class="contract-section">
+        <div class="contract-info">
+            <span class="contract-label">Contract Address:</span>
+            <span class="contract-address"></span>
         </div>
     </section>
 
