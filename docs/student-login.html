@@ -9,10 +9,13 @@
 </head>
 
 <body class="body" onload="getWalletAddress(); renderStudentProjects(); showLoginSuccessToast()">
+
     <!-- Toast Notification Container -->
+
     <div id="toastContainer" class="toast-container"></div>
 
     <!-- Navigation Bar -->
+
     <nav class="navbar">
         <div class="navbar-container">
             <div class="logo">
@@ -28,12 +31,14 @@
     </nav>
 
     <!-- User Info and Dashboard Header -->
+
     <section class="header">
         <div>Student Dashboard</div>
         <h3 class="wallet-address"></h3> <!--inserted using .js file-->
     </section><br>
 
     <!-- Projects Section -->
+
     <section class="projects">
         <div class="projects-header">YOUR PROJECTS</div>
         <hr class="hr1">
@@ -66,11 +71,14 @@
         </div>
 
         <div class="display-project">
+
             <!-- Will be populated by JS -->
+
         </div>
     </section>
 
     <!-- Contract Address Section -->
+
     <section class="contract-section">
         <div class="contract-info">
             <span class="contract-label">Contract Address:</span>
@@ -79,6 +87,7 @@
     </section>
 
     <!-- Include ethers if needed, though strictly we mint from faculty -->
+     
     <script src="https://unpkg.com/ethers@6.11.1/dist/ethers.umd.min.js"></script>
     <script src="app.js"></script>
 </body>
