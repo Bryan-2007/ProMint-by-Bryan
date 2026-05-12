@@ -1,67 +1,32 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-// ============================================================================
-// PROMINT SMART CONTRACT
-// Purpose: Manage student projects and allow faculty to mint them as NFTs
-//          Stores project metadata and tracks minting status on blockchain
-// ============================================================================
-
 contract ProMint {
+    string public constant name = "ProMint Soulbound Project";
+    string public constant symbol = "PROMINT";
 
-    // ========================================================================
-    // SECTION 1: STATE VARIABLES
-    // Description: Define storage variables that persist on the blockchain
-    //              These variables maintain the contract's state
-    // ========================================================================
+    // Hardcoded faculty wallet: 0x26839094202c7582de5279eb61239b55c481fe2d
+    address private facultyWallet =
+        address(bytes20(hex"26839094202c7582de5279eb61239b55c481fe2d"));
 
-    // Faculty wallet address - the only account allowed to mint projects
-    address private facultyWallet = 0x26839094202c7582DE5279eB61239B55C481Fe2d;
-
-
-    // ========================================================================
-    // SECTION 2: DATA STRUCTURES
-    // Description: Define the Project struct to organize project information
-    //              Each project stores student work details and minting status
-    // ========================================================================
-
-    // Project structure - represents a single student project
     struct Project {
-        uint256 id;                  // Unique project identifier
-        string name;                 // Project name/title
-        string domains;              // Technical domains/technologies used
-        string date;                 // Project completion date
-        address studentWallet;       // Wallet address of the student who created it
-        bool minted;                 // Whether the project has been minted as NFT
-        uint256 timestamp;           // Block timestamp when project was created
+        uint256 id;
+        string name;
+        string domains;
+        string date;
+        address studentWallet;
+        bool minted;
+        uint256 timestamp;
     }
 
-
-    // ========================================================================
-    // SECTION 3: MAPPINGS (DATA STORAGE)
-    // Description: Define how data is stored and organized in the contract
-    //              Mappings provide efficient lookup by key
-    // ========================================================================
-
-    // Mapping: projectId => Project details
-    // Stores all projects indexed by their ID
     mapping(uint256 => Project) private projects;
-
-    // Mapping: studentWallet => array of project IDs
-    // Stores which projects belong to each student
     mapping(address => uint256[]) private studentProjects;
+    mapping(uint256 => address) private tokenOwners;
+    mapping(address => uint256) private ownedTokenCount;
+    mapping(address => mapping(address => bool)) private operatorApprovals;
 
-    // Counter to generate unique project IDs
     uint256 private projectCounter = 0;
 
-
-    // ========================================================================
-    // SECTION 4: EVENTS
-    // Description: Events are logged when important actions occur
-    //              They allow frontend to listen for blockchain changes
-    // ========================================================================
-
-    // Event emitted when a new project is created
     event ProjectCreated(
         uint256 indexed projectId,
         string name,
@@ -69,130 +34,108 @@ contract ProMint {
         uint256 timestamp
     );
 
-    // Event emitted when a project is minted by faculty
     event ProjectMinted(
         uint256 indexed projectId,
         address indexed facultyWallet,
         uint256 timestamp
     );
 
+    event FacultyWalletUpdated(
+        address indexed previousFaculty,
+        address indexed newFaculty
+    );
 
-    // ========================================================================
-    // SECTION 5: MODIFIERS
-    // Description: Modifiers restrict function access to specific users
-    //              Used for access control and permissions
-    // ========================================================================
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+    event Locked(uint256 indexed tokenId);
 
-    // Modifier: Ensures only the faculty can execute the function
     modifier onlyFaculty() {
-        require(
-            msg.sender == facultyWallet,
-            "Only faculty can perform this action"
-        );
+        require(msg.sender == facultyWallet, "Only faculty can perform this action");
         _;
     }
 
-
-    // ========================================================================
-    // SECTION 6: PROJECT CREATION FUNCTION
-    // Description: Allows students to create and submit new projects
-    //              Validates input and stores project on blockchain
-    // ========================================================================
-
-    // Create a new project
     function createProject(
         string memory _name,
         string memory _domains,
         string memory _date
     ) public returns (uint256) {
-        // Validate project name is not empty
         require(bytes(_name).length > 0, "Project name cannot be empty");
-
-        // Validate domains field is not empty
         require(bytes(_domains).length > 0, "Domains cannot be empty");
+        require(bytes(_date).length > 0, "Date cannot be empty");
+        require(bytes(_name).length <= 256, "Project name too long");
+        require(bytes(_domains).length <= 512, "Domains too long");
+        require(bytes(_date).length <= 64, "Date too long");
 
-        // Get next project ID
         uint256 projectId = projectCounter;
         projectCounter++;
 
-        // Create and store the project with current data
         projects[projectId] = Project({
             id: projectId,
             name: _name,
             domains: _domains,
             date: _date,
-            studentWallet: msg.sender,                    // Store caller's wallet
-            minted: false,                                // Initially not minted
-            timestamp: block.timestamp                    // Record creation time
+            studentWallet: msg.sender,
+            minted: false,
+            timestamp: block.timestamp
         });
 
-        // Add project ID to student's project list
         studentProjects[msg.sender].push(projectId);
 
-        // Emit event for frontend listeners
         emit ProjectCreated(projectId, _name, msg.sender, block.timestamp);
 
-        // Return the new project's ID
         return projectId;
     }
 
-
-    // ========================================================================
-    // SECTION 7: PROJECT MINTING FUNCTION
-    // Description: Allows faculty to mint (approve) student projects as NFTs
-    //              Only faculty can call this function
-    // ========================================================================
-
-    // Mint a project (only faculty can call this)
     function mintProject(uint256 _projectId) public onlyFaculty {
-        // Verify project exists
         require(_projectId < projectCounter, "Project does not exist");
-
-        // Verify project hasn't already been minted
         require(!projects[_projectId].minted, "Project already minted");
 
-        // Mark project as minted
-        projects[_projectId].minted = true;
+        Project storage project = projects[_projectId];
+        project.minted = true;
 
-        // Emit event for frontend listeners
+        tokenOwners[_projectId] = project.studentWallet;
+        ownedTokenCount[project.studentWallet]++;
+
+        emit Transfer(address(0), project.studentWallet, _projectId);
+        emit Locked(_projectId);
         emit ProjectMinted(_projectId, msg.sender, block.timestamp);
     }
 
-
-    // ========================================================================
-    // SECTION 8: READ-ONLY FUNCTIONS (QUERIES)
-    // Description: Functions that retrieve data without modifying state
-    //              These can be called by anyone without spending gas
-    // ========================================================================
-
-    // Get all projects from the contract
     function getAllProjects() public view returns (Project[] memory) {
-        // Create array to hold all projects
-        Project[] memory allProjects = new Project[](projectCounter);
-
-        // Loop through all projects and add to array
-        for (uint256 i = 0; i < projectCounter; i++) {
-            allProjects[i] = projects[i];
-        }
-
-        return allProjects;
+        return getProjects(0, projectCounter);
     }
 
-    // Get all projects created by a specific student
+    function getProjects(uint256 _offset, uint256 _limit)
+        public
+        view
+        returns (Project[] memory)
+    {
+        if (_offset >= projectCounter) {
+            return new Project[](0);
+        }
+
+        uint256 end = _offset + _limit;
+        if (end > projectCounter) {
+            end = projectCounter;
+        }
+
+        Project[] memory projectList = new Project[](end - _offset);
+        for (uint256 i = _offset; i < end; i++) {
+            projectList[i - _offset] = projects[i];
+        }
+
+        return projectList;
+    }
+
     function getStudentProjects(address _studentWallet)
         public
         view
         returns (Project[] memory)
     {
-        // Get array of project IDs for the student
         uint256[] memory projectIds = studentProjects[_studentWallet];
+        Project[] memory studentProjectsList = new Project[](projectIds.length);
 
-        // Create array to hold student's projects
-        Project[] memory studentProjectsList = new Project[](
-            projectIds.length
-        );
-
-        // Loop through student's project IDs and fetch project details
         for (uint256 i = 0; i < projectIds.length; i++) {
             studentProjectsList[i] = projects[projectIds[i]];
         }
@@ -200,42 +143,137 @@ contract ProMint {
         return studentProjectsList;
     }
 
-    // Get details of a single project
-    function getProject(uint256 _projectId)
-        public
-        view
-        returns (Project memory)
-    {
-        // Verify project exists
+    function getProject(uint256 _projectId) public view returns (Project memory) {
         require(_projectId < projectCounter, "Project does not exist");
-
         return projects[_projectId];
     }
 
-    // Get total number of projects in the contract
     function getTotalProjects() public view returns (uint256) {
         return projectCounter;
     }
 
-    // Get the current faculty wallet address
     function getFacultyWallet() public view returns (address) {
         return facultyWallet;
     }
 
-
-    // ========================================================================
-    // SECTION 9: FACULTY MANAGEMENT FUNCTIONS
-    // Description: Functions that allow faculty to manage permissions
-    //              Only current faculty can update the faculty wallet
-    // ========================================================================
-
-    // Update the faculty wallet address (only current faculty can call)
     function updateFacultyWallet(address _newFaculty) public onlyFaculty {
-        // Verify new address is valid
         require(_newFaculty != address(0), "Invalid address");
-
-        // Update faculty wallet
+        address previousFaculty = facultyWallet;
         facultyWallet = _newFaculty;
+        emit FacultyWalletUpdated(previousFaculty, _newFaculty);
     }
 
+    function balanceOf(address owner) public view returns (uint256) {
+        require(owner != address(0), "Invalid owner");
+        return ownedTokenCount[owner];
+    }
+
+    function ownerOf(uint256 tokenId) public view returns (address) {
+        address owner = tokenOwners[tokenId];
+        require(owner != address(0), "Token does not exist");
+        return owner;
+    }
+
+    function locked(uint256 tokenId) public view returns (bool) {
+        ownerOf(tokenId);
+        return true;
+    }
+
+    function tokenURI(uint256 tokenId) public view returns (string memory) {
+        ownerOf(tokenId);
+        Project memory project = projects[tokenId];
+
+        return string.concat(
+            "data:application/json;utf8,{",
+            '"name":"',
+            _escapeJson(project.name),
+            '",',
+            '"description":"ProMint soulbound certification for a student project.",',
+            '"attributes":[',
+            '{"trait_type":"Domains","value":"',
+            _escapeJson(project.domains),
+            '"},',
+            '{"trait_type":"Date Completed","value":"',
+            _escapeJson(project.date),
+            '"},',
+            '{"trait_type":"Student Wallet","value":"',
+            _addressToString(project.studentWallet),
+            '"}',
+            "]}"
+        );
+    }
+
+    function approve(address, uint256) public pure {
+        revert("Soulbound token is non-transferable");
+    }
+
+    function getApproved(uint256 tokenId) public view returns (address) {
+        ownerOf(tokenId);
+        return address(0);
+    }
+
+    function setApprovalForAll(address operator, bool approved) public {
+        operatorApprovals[msg.sender][operator] = approved;
+        emit ApprovalForAll(msg.sender, operator, approved);
+    }
+
+    function isApprovedForAll(address owner, address operator) public view returns (bool) {
+        return operatorApprovals[owner][operator];
+    }
+
+    function transferFrom(address, address, uint256) public pure {
+        revert("Soulbound token is non-transferable");
+    }
+
+    function safeTransferFrom(address, address, uint256) public pure {
+        revert("Soulbound token is non-transferable");
+    }
+
+    function safeTransferFrom(address, address, uint256, bytes memory) public pure {
+        revert("Soulbound token is non-transferable");
+    }
+
+    function supportsInterface(bytes4 interfaceId) public pure returns (bool) {
+        return
+            interfaceId == 0x01ffc9a7 ||
+            interfaceId == 0x80ac58cd ||
+            interfaceId == 0x5b5e139f ||
+            interfaceId == 0xb45a3c0e;
+    }
+
+    function _escapeJson(string memory value) private pure returns (string memory) {
+        bytes memory input = bytes(value);
+        bytes memory output = new bytes(input.length * 2);
+        uint256 length = 0;
+
+        for (uint256 i = 0; i < input.length; i++) {
+            bytes1 char = input[i];
+            if (char == '"' || char == "\\") {
+                output[length++] = "\\";
+            }
+            output[length++] = char;
+        }
+
+        bytes memory trimmed = new bytes(length);
+        for (uint256 i = 0; i < length; i++) {
+            trimmed[i] = output[i];
+        }
+
+        return string(trimmed);
+    }
+
+    function _addressToString(address account) private pure returns (string memory) {
+        bytes20 value = bytes20(account);
+        bytes16 symbols = "0123456789abcdef";
+        bytes memory buffer = new bytes(42);
+        buffer[0] = "0";
+        buffer[1] = "x";
+
+        for (uint256 i = 0; i < 20; i++) {
+            buffer[2 + i * 2] = symbols[uint8(value[i] >> 4)];
+            buffer[3 + i * 2] = symbols[uint8(value[i] & 0x0f)];
+        }
+
+        return string(buffer);
+    }
 }

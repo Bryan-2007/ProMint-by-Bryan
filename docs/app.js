@@ -23,6 +23,7 @@ if (typeof ethers === "undefined") {
 // CONTRACT_ABI: Contains function definitions and event specifications for the contract
 // IMPORTANT: Update CONTRACT_ADDRESS after deploying to Sepolia
 const CONTRACT_ADDRESS = "0x7580cEE2A2B474B73951B231782355432F577857"; // Replace with deployed address
+const DEFAULT_FACULTY_WALLET = "0x26839094202c7582de5279eb61239b55c481fe2d";
 const CONTRACT_ABI = [
     {
         "anonymous": false,
@@ -512,10 +513,14 @@ function showToast(message, icon, type = 'loading', duration = 3000) {
     // Create toast element
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    toast.innerHTML = `
-        <span class="toast-icon">${icon}</span>
-        <span class="toast-message">${message}</span>
-    `;
+    const iconSpan = document.createElement('span');
+    iconSpan.className = 'toast-icon';
+    iconSpan.textContent = icon;
+    const messageSpan = document.createElement('span');
+    messageSpan.className = 'toast-message';
+    messageSpan.textContent = message;
+    toast.appendChild(iconSpan);
+    toast.appendChild(messageSpan);
     
     toastContainer.appendChild(toast);
     
@@ -528,6 +533,15 @@ function showToast(message, icon, type = 'loading', duration = 3000) {
     }
     
     return toast;
+}
+
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 
@@ -561,8 +575,7 @@ if (metamaskWallet) {
 
             // ===== Check If User Is Faculty =====
             // Compare wallet address with faculty wallet to determine user type
-            const FACULTY_WALLET = "0x26839094202c7582DE5279eB61239B55C481Fe2d".toLowerCase();
-            const isFaculty = walletAddress.toLowerCase() === FACULTY_WALLET;
+            const isFaculty = walletAddress.toLowerCase() === DEFAULT_FACULTY_WALLET;
             
             // Set flag to show success toast on dashboard
             localStorage.setItem("showLoginToast", "true");
@@ -606,10 +619,14 @@ function getWalletAddress() {
         // ===== Format Wallet Address =====
         // Display shortened version: first 6 and last 4 characters
         const walletDisplay = wallet.slice(0, 6) + "..." + wallet.slice(-4);
-        document.querySelector(".wallet-address").innerHTML = `
-            Connected Wallet - ${walletDisplay}
-            <img class="copy-wallet" src="../assets/copy-symbol.png" title="Copy wallet address" alt="Copy">
-        `;
+        const walletAddressElement = document.querySelector(".wallet-address");
+        walletAddressElement.textContent = `Connected Wallet - ${walletDisplay} `;
+        const copyWalletImg = document.createElement("img");
+        copyWalletImg.className = "copy-wallet";
+        copyWalletImg.src = "../assets/copy-symbol.png";
+        copyWalletImg.title = "Copy wallet address";
+        copyWalletImg.alt = "Copy";
+        walletAddressElement.appendChild(copyWalletImg);
 
         // ===== Copy Wallet to Clipboard =====
         // Handle click to copy full wallet address
@@ -651,10 +668,13 @@ function displayContractAddress() {
         // ===== Format Contract Address =====
         // Display shortened version: first 6 and last 4 characters
         const contractDisplay = CONTRACT_ADDRESS.slice(0, 6) + "..." + CONTRACT_ADDRESS.slice(-4);
-        contractAddressElement.innerHTML = `
-            ${contractDisplay}
-            <img class="copy-contract" src="../assets/copy-symbol.png" title="Copy contract address" alt="Copy">
-        `;
+        contractAddressElement.textContent = `${contractDisplay} `;
+        const copyContractImg = document.createElement("img");
+        copyContractImg.className = "copy-contract";
+        copyContractImg.src = "../assets/copy-symbol.png";
+        copyContractImg.title = "Copy contract address";
+        copyContractImg.alt = "Copy";
+        contractAddressElement.appendChild(copyContractImg);
 
         // ===== Copy Contract Address to Clipboard =====
         // Handle click to copy full contract address
@@ -871,9 +891,9 @@ async function renderStudentProjects() {
 
             // Display project details: name, domains, date, and minting status
             row.innerHTML = `
-                <div class="project-name" style="font-weight: bold; font-size: 1.2em; margin-bottom: 8px;">${p.name}</div>
-                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Domains: ${p.domains}</div>
-                <div class="project-date" style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Completed: ${p.date}</div>
+                <div class="project-name" style="font-weight: bold; font-size: 1.2em; margin-bottom: 8px;">${escapeHTML(p.name)}</div>
+                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Domains: ${escapeHTML(p.domains)}</div>
+                <div class="project-date" style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Completed: ${escapeHTML(p.date)}</div>
                 <div class="project-status" style="margin-top: 8px; color: ${p.minted ? 'green' : 'orange'}; font-weight: 500;">
                     Status: ${p.minted ? '✓ NFT Minted (Non-transferrable)' : '⏳ Pending Mint'}
                 </div>
@@ -943,9 +963,9 @@ if (projectSearch && document.querySelector(".display-project")) {
                 row.style.padding = "10px";
                 row.style.borderRadius = "5px";
                 row.innerHTML = `
-                    <div class="project-name" style="font-weight: bold; font-size: 1.2em;">${p.name}</div>
-                    <div class="project-desc">Domains: ${p.domains}</div>
-                    <div class="project-date">Completed: ${p.date}</div>
+                    <div class="project-name" style="font-weight: bold; font-size: 1.2em;">${escapeHTML(p.name)}</div>
+                    <div class="project-desc">Domains: ${escapeHTML(p.domains)}</div>
+                    <div class="project-date">Completed: ${escapeHTML(p.date)}</div>
                     <div class="project-status" style="margin-top: 5px; color: ${p.minted ? 'green' : 'orange'}">
                         Status: ${p.minted ? 'NFT Minted (Non-transferrable)' : 'Pending Mint'}
                     </div>
@@ -1022,10 +1042,10 @@ async function renderFacultyDashboard() {
             detailsDiv.style.minWidth = "0";
 
             detailsDiv.innerHTML = `
-                <div class="project-name" style="font-weight: bold; font-size: 1.2em; margin-bottom: 8px;">${p.name}</div>
-                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Student: <span style="font-family: monospace;">${p.studentWallet}</span></div>
-                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Domains: ${p.domains}</div>
-                <div class="project-date" style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Completed: ${p.date}</div>
+                <div class="project-name" style="font-weight: bold; font-size: 1.2em; margin-bottom: 8px;">${escapeHTML(p.name)}</div>
+                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Student: <span style="font-family: monospace;">${escapeHTML(p.studentWallet)}</span></div>
+                <div class="project-desc" style="font-size: 0.9em; color: #666; margin-bottom: 5px;">Domains: ${escapeHTML(p.domains)}</div>
+                <div class="project-date" style="font-size: 0.9em; color: #666; margin-bottom: 8px;">Completed: ${escapeHTML(p.date)}</div>
                 <div class="project-status" style="margin-top: 8px; color: ${p.minted ? 'green' : 'orange'}; font-weight: 500;">
                     Status: ${p.minted ? '✓ NFT Minted' : '⏳ Pending Mint'}
                 </div>
@@ -1069,7 +1089,7 @@ async function renderFacultyDashboard() {
     } catch (error) {
         console.error("Error fetching faculty projects:", error);
         console.error("Error stack:", error.stack);
-        displayAll.innerHTML = "<p style='text-align: center; color: red;'>Error loading projects: " + error.message + "</p>";
+        displayAll.innerHTML = "<p style='text-align: center; color: red;'>Error loading projects: " + escapeHTML(error.message) + "</p>";
     }
     
     // ===== Display Contract Address =====
@@ -1135,10 +1155,10 @@ if (facultyProjectSearch && document.querySelector(".display-all-projects")) {
 
                 row.innerHTML = `
                     <div>
-                        <div class="project-name" style="font-weight: bold; font-size: 1.2em;">${p.name}</div>
-                        <div class="project-desc">Student: ${p.studentWallet}</div>
-                        <div class="project-desc">Domains: ${p.domains}</div>
-                        <div class="project-date">Completed: ${p.date}</div>
+                        <div class="project-name" style="font-weight: bold; font-size: 1.2em;">${escapeHTML(p.name)}</div>
+                        <div class="project-desc">Student: ${escapeHTML(p.studentWallet)}</div>
+                        <div class="project-desc">Domains: ${escapeHTML(p.domains)}</div>
+                        <div class="project-date">Completed: ${escapeHTML(p.date)}</div>
                         <div class="project-status" style="margin-top: 5px; color: ${p.minted ? 'green' : 'orange'}">
                             Status: ${p.minted ? 'NFT Minted (Non-transferrable)' : 'Pending Mint'}
                         </div>

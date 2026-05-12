@@ -51,6 +51,12 @@ export default defineConfig({
 
   solidity: {
     version: "0.8.28", // Solidity version for compiling smart contracts
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
   },
 
   // Network configurations for deployment and testing
