@@ -334,6 +334,15 @@ let contract = null;
 let provider = null;
 let signer = null;
 
+function isMobileDevice() {
+    return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function getMetaMaskMobileDeepLink() {
+    const dappUrl = window.location.href.replace(/^https?:\/\//, "");
+    return "https://metamask.app.link/dapp/" + dappUrl;
+}
+
 // ========================================================================
 // SECTION 2: CONTRACT INITIALIZATION
 // Description: Connect to blockchain via MetaMask and initialize contract instance
@@ -355,7 +364,9 @@ async function initializeContract() {
     // Verify MetaMask wallet extension is installed
     if (typeof window.ethereum === "undefined") {
         console.error("MetaMask not installed");
-        alert("Please install MetaMask extension.");
+        if (!isMobileDevice()) {
+            alert("Please install MetaMask extension.");
+        }
         return false;
     }
     
@@ -574,6 +585,11 @@ if (metamaskWallet) {
     metamaskWallet.onclick = async function () {
         // ===== Check MetaMask Installation =====
         if (typeof window.ethereum == "undefined") {
+            if (isMobileDevice()) {
+                window.location.href = getMetaMaskMobileDeepLink();
+                return;
+            }
+
             alert("Metamask wallet extension not found!");
             return;
         }
