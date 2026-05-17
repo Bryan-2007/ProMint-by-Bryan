@@ -454,6 +454,24 @@ const loginBtn = document.querySelector(".login-button");
 const popup = document.querySelector(".login-popup");
 const closeBtn = document.querySelector(".back-button");
 const blur_effect = document.querySelector(".blur-effect");
+const navToggle = document.querySelector(".nav-toggle");
+const navLinks = document.querySelector(".nav-links");
+
+if (navToggle && navLinks) {
+    navToggle.addEventListener("click", function () {
+        const isOpen = navLinks.classList.toggle("open");
+        navToggle.classList.toggle("open", isOpen);
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    navLinks.querySelectorAll("a, button").forEach(item => {
+        item.addEventListener("click", function () {
+            navLinks.classList.remove("open");
+            navToggle.classList.remove("open");
+            navToggle.setAttribute("aria-expanded", "false");
+        });
+    });
+}
 
 // ===== Open Login Popup =====
 // Show login popup when user clicks the login button
@@ -623,7 +641,7 @@ function getWalletAddress() {
         walletAddressElement.textContent = `Connected Wallet - ${walletDisplay} `;
         const copyWalletImg = document.createElement("img");
         copyWalletImg.className = "copy-wallet";
-        copyWalletImg.src = "../assets/copy-symbol.png";
+        copyWalletImg.src = "assets/copy-symbol.png";
         copyWalletImg.title = "Copy wallet address";
         copyWalletImg.alt = "Copy";
         walletAddressElement.appendChild(copyWalletImg);
@@ -671,7 +689,7 @@ function displayContractAddress() {
         contractAddressElement.textContent = `${contractDisplay} `;
         const copyContractImg = document.createElement("img");
         copyContractImg.className = "copy-contract";
-        copyContractImg.src = "../assets/copy-symbol.png";
+        copyContractImg.src = "assets/copy-symbol.png";
         copyContractImg.title = "Copy contract address";
         copyContractImg.alt = "Copy";
         contractAddressElement.appendChild(copyContractImg);

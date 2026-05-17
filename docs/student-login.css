@@ -51,6 +51,7 @@ body:has(.popup-backdrop.active) .navbar {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
+    position: relative;
 }
 
 .logo {
@@ -81,6 +82,32 @@ body:has(.popup-backdrop.active) .navbar {
     align-items: center;
     gap: 2rem;
 }
+
+.nav-toggle {
+    display: none;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 0.5rem;
+    background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+    cursor: pointer;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.nav-toggle span {
+    width: 20px;
+    height: 2px;
+    background: var(--text-light);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle.open span:nth-child(2) { opacity: 0; }
+.nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 .nav-link {
     color: var(--text-dark);
@@ -179,6 +206,42 @@ body:has(.popup-backdrop.active) .navbar {
 .copy-wallet:hover{
     transform: scale(1.15);
     opacity: 0.8;
+}
+
+.contract-section {
+    max-width: 1200px;
+    margin: 0 auto 3rem auto;
+    padding: 1.5rem 2rem;
+    background: var(--white);
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.contract-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.contract-label {
+    font-weight: 600;
+    color: var(--dark-green);
+}
+
+.contract-address {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.copy-contract {
+    width: 20px;
+    height: 20px;
 }
 
 /* ============ PROJECTS SECTION ============ */
@@ -362,6 +425,7 @@ body:has(.popup-backdrop.active) .navbar {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     border-left: 4px solid var(--primary-green);
+    overflow-wrap: anywhere;
 }
 
 .project-row:hover{
@@ -645,6 +709,15 @@ body.dark-mode {
     background-color: rgba(0, 0, 0, 0.7);
 }
 
+.dark-mode .contract-section {
+    background: #1a202c;
+}
+
+.dark-mode .contract-label,
+.dark-mode .contract-address {
+    color: #F3F4F6;
+}
+
 .dark-mode .toast {
     background: #1a202c;
     color: #F3F4F6;
@@ -663,20 +736,57 @@ body.dark-mode {
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 768px) {
+    .logo-image {
+        width: 56px;
+        height: 56px;
+    }
+
+    .nav-toggle {
+        display: flex;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% - 0.25rem);
+        left: 1rem;
+        right: 1rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: 0.75rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .nav-link,
+    .logout,
+    .theme-toggle-button {
+        width: 100%;
+        margin-left: 0;
+        text-align: center;
+    }
+
     .navbar-container {
         padding: 1rem;
     }
 
-    .nav-links {
-        gap: 1rem;
-    }
-
     .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
         padding: 1.5rem 1rem;
         font-size: 1.5rem;
+        margin-inline: 1rem;
     }
 
     .projects {
+        padding: 0;
         margin: 0 1rem;
     }
 
@@ -686,7 +796,13 @@ body.dark-mode {
     }
 
     .projects-search {
-        min-width: 200px;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .new-project-button {
+        width: 100%;
+        text-align: center;
     }
 
     .new-project {
@@ -699,6 +815,27 @@ body.dark-mode {
     .display-all-projects {
         padding: 1rem;
         margin: 0;
+    }
+
+    .wallet-address {
+        flex-wrap: wrap;
+        word-break: break-word;
+    }
+
+    .contract-section {
+        margin: 0 1rem 3rem;
+        padding: 1rem;
+    }
+
+    .toast-container {
+        top: 1rem;
+        left: 1rem;
+        right: 1rem;
+    }
+
+    .toast {
+        min-width: 0;
+        width: 100%;
     }
 }
 
